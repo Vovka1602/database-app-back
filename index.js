@@ -1,28 +1,37 @@
 import express from "express";
 import mysql from "mysql2";
+import cors from "cors";
 
 const app = express();
 
+app.use(cors());
+
 const db = mysql.createConnection({
     host: "localhost",
-    user:"root",
-    password:"16022004As.",
-    database:"бд_магазин"
+    user: "root",
+    password: "16022004As.",
+    database: "бд_магазин"
 })
 
-app.get("/", (req, res) => {
-    res.json("welcome");
-})
+db.connect((err) => {
+    if (err) {
+      throw err;
+    }
+    console.log('MySQL connected');
+});
 
-app.get("/products", (req, res) => {
-    const q = "SELECT * FROM products";
-    db.query(q, (err, data) => {
+app.get('/execute-query', (req, res) => {
+    const { query } = req.query; // Assuming query parameter contains the SQL query
+    if (!query) {
+        return res.status(400).json({ error: 'Missing query parameter' });
+    }
+    db.query(query, (err, result) => {
         if (err) {
-            return res.json(err);
+            return res.status(500).json({ error: 'Server error: Failed to execute query' });
         }
-        return res.json(data);
-    })
-}) 
+        res.json(result);
+    });
+});
 
 app.listen(8000, () => {
     console.log("Connected to backend");
