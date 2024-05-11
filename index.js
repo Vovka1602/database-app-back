@@ -9,7 +9,7 @@ app.use(cors());
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "16022004As.",
+    password: "Password",
     database: "бд_магазин"
 })
 
@@ -21,7 +21,7 @@ db.connect((err) => {
 });
 
 app.get('/execute-query', (req, res) => {
-    const { query } = req.query; // Assuming query parameter contains the SQL query
+    const { query } = req.query;
     if (!query) {
         return res.status(400).json({ error: 'Missing query parameter' });
     }
